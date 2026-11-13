@@ -1,0 +1,169 @@
+
+    :root {
+      --bg-primary: #0b1120;
+      --bg-secondary: #151f32;
+      --bg-surface: rgba(21, 31, 50, 0.95);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent-color: #38bdf8;
+      --accent-secondary: #a855f7;
+      --highlight-bg: rgba(56, 189, 248, 0.16);
+      --highlight-border: #38bdf8;
+      --border-color: rgba(148, 163, 184, 0.16);
+      --reader-font: 'Literata', Georgia, serif;
+      --reader-font-size: 19px;
+      --reader-line-height: 1.75;
+    }
+
+    /* Tema Claro */
+    body.theme-light {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-surface: rgba(255, 255, 255, 0.95);
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --accent-color: #0284c7;
+      --accent-secondary: #7e22ce;
+      --highlight-bg: rgba(2, 132, 199, 0.12);
+      --highlight-border: #0284c7;
+      --border-color: rgba(15, 23, 42, 0.12);
+    }
+
+    /* Tema Sepia */
+    body.theme-sepia {
+      --bg-primary: #f4ecd8;
+      --bg-secondary: #fdf6e3;
+      --bg-surface: rgba(253, 246, 227, 0.96);
+      --text-primary: #3b2f2f;
+      --text-secondary: #7a6855;
+      --accent-color: #b45309;
+      --accent-secondary: #9333ea;
+      --highlight-bg: rgba(180, 83, 9, 0.14);
+      --highlight-border: #d97706;
+      --border-color: rgba(59, 47, 47, 0.15);
+    }
+
+    /* Tema Oscuro OLED (Por defecto) */
+    body.theme-dark {
+      --bg-primary: #0b1120;
+      --bg-secondary: #151f32;
+      --bg-surface: rgba(21, 31, 50, 0.95);
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --accent-color: #38bdf8;
+      --accent-secondary: #c084fc;
+      --highlight-bg: rgba(56, 189, 248, 0.16);
+      --highlight-border: #38bdf8;
+      --border-color: rgba(148, 163, 184, 0.15);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
+    }
+
+    /* Contenedor de lectura */
+    .reader-content {
+      font-family: var(--reader-font);
+      font-size: var(--reader-font-size);
+      line-height: var(--reader-line-height);
+      color: var(--text-primary);
+    }
+
+    .reader-block {
+      position: relative;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 0.75rem;
+      border-radius: 0.85rem;
+      border-left: 3.5px solid transparent;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .reader-block.active-paragraph {
+      background-color: var(--highlight-bg);
+      border-left-color: var(--highlight-border);
+      box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.18);
+    }
+
+    .reader-block.heading-block {
+      font-weight: 700;
+      line-height: 1.35;
+      margin-top: 1.3rem;
+      margin-bottom: 0.85rem;
+      font-size: 1.25em;
+    }
+
+    .reader-block.quote-block {
+      font-style: italic;
+      opacity: 0.92;
+      padding-left: 1.15rem;
+    }
+
+    /* Estilo del texto original en modo Bilingüe */
+    .bilingual-original {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.82em;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      padding-bottom: 0.45rem;
+      margin-bottom: 0.45rem;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    /* Imágenes internas del ePUB */
+    .epub-image-container {
+      margin: 1.25rem 0;
+      text-align: center;
+    }
+    .epub-image-container img {
+      max-width: 100%;
+      height: auto;
+      max-height: 70vh;
+      margin: 0 auto;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Ecualizador animado de voz */
+    @keyframes soundWave {
+      0%, 100% { height: 4px; }
+      50% { height: 15px; }
+    }
+    .wave-bar {
+      width: 3px;
+      background-color: var(--accent-color);
+      border-radius: 9999px;
+      display: inline-block;
+      animation: soundWave 0.85s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Efecto shimmer mientras traduce */
+    @keyframes pulseSubtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+    .translating-shimmer {
+      animation: pulseSubtle 1.3s ease-in-out infinite;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+      border-radius: 9999px;
+    }
