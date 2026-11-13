@@ -5,18 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0b1120" />
   <title>VozEPUB Pro — Lector ePUB con Traductor EN➔ES y Voz Alta</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind CSS (Versión específica y estable por CDN) -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  
   <!-- JSZip para descomprimir archivos .epub directamente en Chrome -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Lucide Icons (Versión estable) -->
+  <script src="https://unpkg.com/lucide@0.368.0"></script>
+  
   <!-- Google Fonts: Inter y Literata -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/style.css">
-
+  
+  <!-- Hoja de estilos (Ruta absoluta desde la raíz) -->
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="theme-dark min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
 
