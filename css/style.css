@@ -151,7 +151,7 @@
     .wave-bar:nth-child(3) { animation-delay: 0.4s; }
 
     /* Efecto shimmer mientras traduce */
-    @keyframes pulseSubtle {
+    @keyframes pulse Subtle {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.55; }
     }
