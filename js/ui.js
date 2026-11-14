@@ -253,8 +253,8 @@ export function renderTocList() {
     const isCurrent = index === state.currentChapterIndex;
     const btn = document.createElement('button');
     btn.className = `w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium flex items-center justify-between gap-2 transition ${isCurrent ? 'font-bold shadow-xs' : 'hover:opacity-80'}`;
-    btn.style.backgroundColor = isCurrent ? 'var(--highlight-bg)' : 'transparent';
-    btn.style.color = isCurrent ? 'var(--accent-color)' : 'var(--text-primary)';
+    btn.style.backgroundColor = isCurrent ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.08)';
+    btn.style.color = isCurrent ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
 
     btn.innerHTML = `
       <span class="truncate">${index + 1}. ${item.title}</span>
@@ -284,14 +284,14 @@ export function applyVisualSettings() {
   document.querySelectorAll('.trans-mode-btn').forEach(btn => {
     const active = btn.dataset.transMode === state.settings.translationMode;
     btn.style.backgroundColor = active ? 'var(--accent-color)' : 'transparent';
-    btn.style.color = active ? '#0b1120' : 'var(--text-primary)';
+    btn.style.color = active ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
     btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
   });
 
   document.querySelectorAll('.tap-mode-btn').forEach(btn => {
     const active = btn.dataset.tapMode === state.settings.tapMode;
-    btn.style.backgroundColor = active ? 'var(--highlight-bg)' : 'var(--bg-primary)';
-    btn.style.color = active ? 'var(--accent-color)' : 'var(--text-primary)';
+    btn.style.backgroundColor = active ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.12)';
+    btn.style.color = active ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
     btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
   });
   dom.touchModeHint.textContent = state.settings.tapMode === 'double'
@@ -315,8 +315,8 @@ export function applyVisualSettings() {
   dom.speedValueLabel.textContent = `${state.settings.rate}x`;
   document.querySelectorAll('.speed-preset-btn').forEach(btn => {
     const isSelected = parseFloat(btn.dataset.speed) === state.settings.rate;
-    btn.style.backgroundColor = isSelected ? 'var(--highlight-bg)' : 'var(--bg-primary)';
-    btn.style.color = isSelected ? 'var(--accent-color)' : 'var(--text-primary)';
+    btn.style.backgroundColor = isSelected ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.12)';
+    btn.style.color = isSelected ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
     btn.style.borderColor = isSelected ? 'var(--accent-color)' : 'var(--border-color)';
   });
 
@@ -335,8 +335,8 @@ export function applyVisualSettings() {
 
   document.querySelectorAll('.prosody-profile-btn').forEach(btn => {
     const active = btn.dataset.prosody === state.settings.prosodyProfile;
-    btn.style.backgroundColor = active ? 'var(--highlight-bg)' : 'var(--bg-secondary)';
-    btn.style.color = active ? 'var(--accent-color)' : 'var(--text-primary)';
+    btn.style.backgroundColor = active ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.12)';
+    btn.style.color = active ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
     btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
   });
 

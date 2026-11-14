@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0b1120" />
+  <meta name="theme-color" content="#4A2417" />
   <title>VozEPUB Pro — Lector ePUB con Traductor EN➔ES y Voz Alta</title>
   
   <!-- Tailwind CSS (Versión específica y estable por CDN) -->
@@ -22,7 +22,7 @@
   
   <link rel="stylesheet" href="./css/style.css">
 </head>
-<body class="theme-dark min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
+<body class="theme-dark min-h-screen flex flex-col selection:bg-[#8EC9E8] selection:text-[#4A2417]">
 
   <!-- ================= BARRA SUPERIOR FIJA ================= -->
   <header class="sticky top-0 z-30 backdrop-blur-md border-b transition-colors"
@@ -75,7 +75,7 @@
                 class="p-2 rounded-xl transition active:scale-95 hover:opacity-80"
                 style="background-color: var(--bg-primary); border: 1px solid var(--border-color);"
                 title="Guardar esta app HTML en tu celular">
-          <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+          <i data-lucide="download" class="w-4 h-4" style="color: var(--accent-color);"></i>
         </button>
 
         <button id="btnOpenSettings"
@@ -89,13 +89,13 @@
 
     <!-- Banner de estado de traducción en vivo -->
     <div id="translationStatusBar"
-         class="hidden px-3 py-1.5 text-xs border-t items-center justify-between gap-2"
-         style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+         class="hidden px-3 py-1.5 text-xs border-t items-center justify-between gap-2 shadow-inner"
+         style="background-color: var(--bg-secondary); border-color: rgba(74, 36, 23, 0.15);">
       <div class="flex items-center gap-2 truncate">
-        <div id="translationSpinner" class="w-3.5 h-3.5 border-2 border-sky-400 border-t-transparent rounded-full animate-spin shrink-0"></div>
-        <span id="translationStatusText" class="truncate font-medium">Traduciendo capítulo de Inglés a Español...</span>
+        <div id="translationSpinner" class="w-3.5 h-3.5 border-2 border-[#4A2417] border-t-transparent rounded-full animate-spin shrink-0"></div>
+        <span id="translationStatusText" class="truncate font-bold text-[#4A2417]">Traduciendo capítulo de Inglés a Español...</span>
       </div>
-      <span id="translationCountBadge" class="font-bold shrink-0" style="color: var(--accent-color);">0/0</span>
+      <span id="translationCountBadge" class="font-black shrink-0 text-[#4A2417]">0/0</span>
     </div>
 
     <!-- Barra de progreso de lectura del capítulo -->
@@ -107,75 +107,75 @@
   <!-- ================= CONTENIDO PRINCIPAL ================= -->
   <main class="flex-1 max-w-3xl w-full mx-auto px-3 sm:px-6 pt-4 pb-48">
 
-    <!-- PANTALLA DE BIENVENIDA / CARGA DE ARCHIVO -->
+    <!-- PANTALLA DE BIENVENIDA / CARGA DE ARCHIVO (30% Color Secundario Rosa Palo) -->
     <section id="welcomeScreen" class="my-3 sm:my-6">
-      <div class="rounded-3xl p-5 sm:p-8 text-center border shadow-xl transition-all"
-           style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+      <div class="rounded-3xl p-5 sm:p-8 text-center border shadow-2xl transition-all"
+           style="background-color: var(--bg-secondary); border-color: rgba(74, 36, 23, 0.18);">
         
-        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-inner"
-             style="background-color: var(--highlight-bg); color: var(--accent-color);">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-md"
+             style="background-color: #4A2417; color: var(--accent-color);">
           <i data-lucide="book-open-check" class="w-8 h-8"></i>
         </div>
 
-        <h1 class="text-xl sm:text-2xl font-bold mb-2">Lector ePUB + Traductor EN ➔ ES</h1>
-        <p class="text-xs sm:text-sm mb-5 max-w-lg mx-auto leading-relaxed" style="color: var(--text-secondary);">
+        <h1 class="text-xl sm:text-2xl font-black mb-2 tracking-tight" style="color: #4A2417;">Lector ePUB + Traductor EN ➔ ES</h1>
+        <p class="text-xs sm:text-sm mb-5 max-w-lg mx-auto leading-relaxed font-medium" style="color: #5C2B1D;">
           Optimizado para <strong>Google Chrome en tu celular</strong>. Abre cualquier libro en inglés o español, tradúcelo al instante y escúchalo en voz alta con temporizador de sueño.
         </p>
 
-        <!-- Zona táctil para subir ePUB -->
+        <!-- Zona táctil para subir ePUB (60% Base Marrón con Acento Celeste 10%) -->
         <label for="fileInputMain"
                id="dropZone"
-               class="block w-full cursor-pointer rounded-2xl border-2 border-dashed p-6 sm:p-7 transition-all active:scale-[0.99] hover:opacity-95 mb-4"
-               style="border-color: var(--accent-color); background-color: var(--bg-primary);">
+               class="block w-full cursor-pointer rounded-2xl border-2 border-dashed p-6 sm:p-7 transition-all active:scale-[0.99] hover:opacity-95 mb-4 shadow-md"
+               style="border-color: var(--accent-color); background-color: #4A2417;">
           <div class="flex flex-col items-center justify-center gap-2">
-            <div class="p-3 rounded-full" style="background-color: var(--highlight-bg);">
+            <div class="p-3 rounded-full" style="background-color: rgba(142, 201, 232, 0.18);">
               <i data-lucide="upload-cloud" class="w-7 h-7" style="color: var(--accent-color);"></i>
             </div>
-            <span class="font-semibold text-base sm:text-lg">Toca aquí para subir tu libro .ePUB</span>
-            <span class="text-xs" style="color: var(--text-secondary);">
+            <span class="font-bold text-base sm:text-lg text-[#FFF6F6]">Toca aquí para subir tu libro .ePUB</span>
+            <span class="text-xs text-[#E8BFC2]">
               Se guarda en la memoria de Chrome para que sigas leyendo cuando quieras
             </span>
           </div>
         </label>
         <input id="fileInputMain" type="file" accept=".epub,application/epub+zip" class="hidden" />
 
-        <!-- Botones de Libros de Prueba (Inglés para probar traducción y Español) -->
+        <!-- Botones de Libros de Prueba (10% Acento Celeste y 60% Marrón) -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 mt-4 pt-4 border-t"
-             style="border-color: var(--border-color);">
+             style="border-color: rgba(74, 36, 23, 0.15);">
           <button id="btnLoadEnglishDemo"
-                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition active:scale-95 shadow-sm"
-                  style="background-color: var(--accent-color); color: #0b1120;">
+                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition active:scale-95 shadow-md hover:brightness-105"
+                  style="background-color: var(--accent-color); color: #4A2417;">
             <i data-lucide="languages" class="w-4 h-4"></i>
             <span>Probar Libro en Inglés (Traducir EN ➔ ES)</span>
           </button>
 
           <button id="btnLoadSpanishDemo"
-                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium border transition active:scale-95"
-                  style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary);">
+                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-semibold border transition active:scale-95 shadow-sm hover:opacity-90"
+                  style="background-color: #4A2417; border-color: #4A2417; color: #FFF6F6;">
             <i data-lucide="sparkles" class="w-4 h-4" style="color: var(--accent-color);"></i>
             <span>Relato Demo en Español</span>
           </button>
         </div>
 
         <!-- Tarjetas de funciones clave -->
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-left text-xs" style="color: var(--text-secondary);">
-          <div class="p-3 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
-            <div class="font-semibold mb-1 flex items-center gap-1.5" style="color: var(--text-primary);">
-              <i data-lucide="languages" class="w-3.5 h-3.5" style="color: var(--accent-color);"></i>
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-left text-xs">
+          <div class="p-3.5 rounded-2xl border shadow-sm transition hover:shadow-md" style="background-color: #FFF5F6; border-color: rgba(74, 36, 23, 0.12); color: #5C2B1D;">
+            <div class="font-bold mb-1 flex items-center gap-1.5" style="color: #4A2417;">
+              <i data-lucide="languages" class="w-4 h-4" style="color: #2B7EA8;"></i>
               Traducción + Voz ES
             </div>
             Cambia entre <strong>EN</strong>, <strong>ES</strong> o <strong>Bilingüe</strong> arriba. Al traducir al español, Chrome lo lee con voz en español.
           </div>
-          <div class="p-3 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
-            <div class="font-semibold mb-1 flex items-center gap-1.5" style="color: var(--text-primary);">
-              <i data-lucide="moon-star" class="w-3.5 h-3.5" style="color: var(--accent-color);"></i>
+          <div class="p-3.5 rounded-2xl border shadow-sm transition hover:shadow-md" style="background-color: #FFF5F6; border-color: rgba(74, 36, 23, 0.12); color: #5C2B1D;">
+            <div class="font-bold mb-1 flex items-center gap-1.5" style="color: #4A2417;">
+              <i data-lucide="moon-star" class="w-4 h-4" style="color: #2B7EA8;"></i>
               Temporizador de Sueño
             </div>
             Programa 10, 15, 30, 60 min o fin del capítulo. Espera a terminar la oración antes de pausar.
           </div>
-          <div class="p-3 rounded-xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
-            <div class="font-semibold mb-1 flex items-center gap-1.5" style="color: var(--text-primary);">
-              <i data-lucide="smartphone" class="w-3.5 h-3.5" style="color: var(--accent-color);"></i>
+          <div class="p-3.5 rounded-2xl border shadow-sm transition hover:shadow-md" style="background-color: #FFF5F6; border-color: rgba(74, 36, 23, 0.12); color: #5C2B1D;">
+            <div class="font-bold mb-1 flex items-center gap-1.5" style="color: #4A2417;">
+              <i data-lucide="smartphone" class="w-4 h-4" style="color: #2B7EA8;"></i>
               Doble Toque Seguro
             </div>
             Desliza tranquilo para leer: haz <strong>doble toque</strong> en cualquier párrafo para iniciar la voz desde ahí.
@@ -186,10 +186,10 @@
 
     <!-- INDICADOR DE CARGA -->
     <section id="loadingIndicator" class="hidden my-12 text-center">
-      <div class="inline-flex flex-col items-center gap-3 p-6 rounded-2xl border"
-           style="background-color: var(--bg-secondary); border-color: var(--border-color);">
-        <div class="w-10 h-10 border-4 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-        <p id="loadingText" class="text-sm font-medium">Descomprimiendo y procesando ePUB...</p>
+      <div class="inline-flex flex-col items-center gap-3 p-6 rounded-2xl border shadow-xl"
+           style="background-color: var(--bg-secondary); border-color: rgba(74, 36, 23, 0.2); color: #4A2417;">
+        <div class="w-10 h-10 border-4 border-[#4A2417] border-t-transparent rounded-full animate-spin"></div>
+        <p id="loadingText" class="text-sm font-bold text-[#4A2417]">Descomprimiendo y procesando ePUB...</p>
       </div>
     </section>
 
@@ -197,16 +197,15 @@
     <section id="readerView" class="hidden">
       <!-- Cabecera del Capítulo Actual -->
       <div class="mb-4 pb-3 border-b flex flex-col gap-1.5" style="border-color: var(--border-color);">
-        <div class="flex items-center justify-between text-xs uppercase tracking-wider font-semibold"
-             style="color: var(--accent-color);">
-          <span id="chapterCounterBadge">Capítulo 1</span>
-          <span id="paragraphCounterBadge">Párrafo 1 / 1</span>
+        <div class="flex items-center justify-between text-xs uppercase tracking-wider font-bold">
+          <span id="chapterCounterBadge" class="px-2.5 py-1 rounded-lg shadow-xs" style="background-color: var(--bg-secondary); color: #4A2417;">Capítulo 1</span>
+          <span id="paragraphCounterBadge" class="font-bold" style="color: var(--accent-color);">Párrafo 1 / 1</span>
         </div>
         <h2 id="currentChapterTitle" class="text-lg sm:text-xl font-bold leading-snug">Título del Capítulo</h2>
         <div class="flex flex-wrap items-center justify-between gap-2 text-xs" style="color: var(--text-secondary);">
           <span id="currentBookAuthor"></span>
-          <span id="touchModeHint" class="px-2 py-0.5 rounded-md border text-[11px]"
-                style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+          <span id="touchModeHint" class="px-2.5 py-0.5 rounded-md border text-[11px] font-semibold"
+                style="background-color: var(--bg-secondary); border-color: rgba(74, 36, 23, 0.15); color: #4A2417;">
             Doble toque en un párrafo para hablar
           </span>
         </div>
@@ -215,18 +214,18 @@
       <!-- Contenedor de Párrafos Interactivos -->
       <article id="chapterContent" class="reader-content select-text"></article>
 
-      <!-- Navegación Inferior entre Capítulos -->
+      <!-- Navegación Inferior entre Capítulos (30% Rosa Palo con Texto Marrón) -->
       <div class="mt-10 pt-6 border-t flex items-center justify-between gap-3" style="border-color: var(--border-color);">
         <button id="btnPrevChapter"
-                class="flex-1 py-3.5 px-4 rounded-2xl font-medium text-sm flex items-center justify-center gap-2 border transition active:scale-95 disabled:opacity-40"
-                style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                class="flex-1 py-3.5 px-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 border shadow-md transition active:scale-95 disabled:opacity-40 hover:opacity-90"
+                style="background-color: var(--bg-secondary); color: #4A2417; border-color: rgba(74, 36, 23, 0.15);">
           <i data-lucide="chevron-left" class="w-4 h-4"></i>
           <span>Cap. Anterior</span>
         </button>
 
         <button id="btnNextChapter"
-                class="flex-1 py-3.5 px-4 rounded-2xl font-medium text-sm flex items-center justify-center gap-2 border transition active:scale-95 disabled:opacity-40"
-                style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                class="flex-1 py-3.5 px-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 border shadow-md transition active:scale-95 disabled:opacity-40 hover:opacity-90"
+                style="background-color: var(--bg-secondary); color: #4A2417; border-color: rgba(74, 36, 23, 0.15);">
           <span>Siguiente Cap.</span>
           <i data-lucide="chevron-right" class="w-4 h-4"></i>
         </button>
@@ -246,7 +245,7 @@
         <!-- Botón para centrar el párrafo actual + indicador de onda -->
         <button id="btnJumpToActive"
                 class="flex-1 text-left truncate text-xs flex items-center gap-1.5 py-1.5 px-2.5 rounded-xl border transition hover:opacity-85"
-                style="color: var(--text-secondary); background-color: var(--bg-primary); border-color: var(--border-color);">
+                style="color: var(--text-secondary); background-color: rgba(244, 201, 205, 0.12); border-color: var(--border-color);">
           <div id="miniWaveIndicator" class="hidden items-center gap-0.5 h-3.5 shrink-0">
             <span class="wave-bar"></span>
             <span class="wave-bar"></span>
@@ -301,10 +300,10 @@
           <i data-lucide="step-back" class="w-5 h-5"></i>
         </button>
 
-        <!-- Botón Central Play / Pause -->
+        <!-- Botón Central Play / Pause (10% Color de Acento Celeste) -->
         <button id="btnPlayPause"
-                class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition transform active:scale-90 disabled:opacity-40"
-                style="background-color: var(--accent-color); color: #0b1120;"
+                class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition transform active:scale-90 disabled:opacity-40 hover:scale-105"
+                style="background-color: var(--accent-color); color: #4A2417;"
                 title="Reproducir / Pausar voz">
           <i id="iconPlayPause" data-lucide="play" class="w-7 h-7 fill-current ml-0.5"></i>
         </button>
@@ -334,13 +333,13 @@
     <div id="sleepBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
 
     <div class="relative z-10 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 border shadow-2xl"
-         style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+         style="background-color: #381B11; border-color: var(--border-color);">
       <div class="flex items-center justify-between pb-3 mb-4 border-b" style="border-color: var(--border-color);">
         <div class="flex items-center gap-2">
           <i data-lucide="moon-star" class="w-5 h-5" style="color: var(--accent-color);"></i>
           <h3 class="font-bold text-base">Temporizador de Sueño</h3>
         </div>
-        <button id="btnCloseSleepModal" class="p-2 rounded-xl" style="background-color: var(--bg-primary);">
+        <button id="btnCloseSleepModal" class="p-2 rounded-xl" style="background-color: rgba(244, 201, 205, 0.15);">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -382,13 +381,13 @@
     <div id="tocBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
     
     <aside class="relative z-10 w-80 max-w-[85vw] h-full flex flex-col border-r shadow-2xl"
-           style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+           style="background-color: #381B11; border-color: var(--border-color);">
       <div class="p-4 border-b flex items-center justify-between" style="border-color: var(--border-color);">
         <div>
           <h3 class="font-bold text-base">Índice de Capítulos</h3>
           <p id="tocBookMeta" class="text-xs truncate max-w-[210px]" style="color: var(--text-secondary);"></p>
         </div>
-        <button id="btnCloseToc" class="p-2 rounded-xl hover:opacity-80" style="background-color: var(--bg-primary);">
+        <button id="btnCloseToc" class="p-2 rounded-xl hover:opacity-80" style="background-color: rgba(244, 201, 205, 0.15);">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -409,14 +408,14 @@
     <div id="settingsBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
 
     <div class="relative z-10 w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 border shadow-2xl max-h-[88vh] overflow-y-auto"
-         style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+         style="background-color: #381B11; border-color: var(--border-color);">
       
       <div class="flex items-center justify-between pb-3 mb-4 border-b" style="border-color: var(--border-color);">
         <div class="flex items-center gap-2">
           <i data-lucide="sliders-horizontal" class="w-5 h-5" style="color: var(--accent-color);"></i>
           <h3 class="font-bold text-base sm:text-lg">Ajustes de Traducción, Voz y Pantalla</h3>
         </div>
-        <button id="btnCloseSettings" class="p-2 rounded-xl" style="background-color: var(--bg-primary);">
+        <button id="btnCloseSettings" class="p-2 rounded-xl" style="background-color: rgba(244, 201, 205, 0.15);">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -446,7 +445,7 @@
 
         <!-- Motor de Optimización de Voz: Voces de Red + Prosodia y Limpieza -->
         <div class="p-3.5 rounded-2xl border space-y-3.5"
-             style="background-color: var(--bg-primary); border-color: var(--border-color);">
+             style="background-color: rgba(244, 201, 205, 0.08); border-color: var(--border-color);">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-1.5">
               <i data-lucide="sparkles" class="w-4 h-4" style="color: var(--accent-color);"></i>
@@ -455,7 +454,7 @@
             <button id="btnTestVoiceProsody"
                     type="button"
                     class="px-2.5 py-1 rounded-lg text-xs font-semibold border transition active:scale-95 flex items-center gap-1"
-                    style="background-color: var(--highlight-bg); color: var(--accent-color); border-color: var(--accent-color);">
+                    style="background-color: var(--accent-color); color: #4A2417; border-color: var(--accent-color);">
               <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
               <span>Probar voz</span>
             </button>
@@ -541,7 +540,7 @@
           </div>
           <select id="voiceSelectEs"
                   class="w-full p-2.5 rounded-xl text-xs sm:text-sm border outline-none"
-                  style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
+                  style="background-color: #261109; color: var(--text-primary); border-color: var(--border-color);">
             <option value="">Cargando voces de Chrome...</option>
           </select>
         </div>
@@ -553,7 +552,7 @@
           </label>
           <select id="voiceSelectEn"
                   class="w-full p-2.5 rounded-xl text-xs sm:text-sm border outline-none"
-                  style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
+                  style="background-color: #261109; color: var(--text-primary); border-color: var(--border-color);">
             <option value="">Cargando voces en inglés...</option>
           </select>
         </div>
@@ -596,8 +595,8 @@
             Tema de Pantalla
           </span>
           <div class="grid grid-cols-3 gap-2.5">
-            <button data-theme="dark" class="theme-btn py-2.5 px-3 rounded-xl text-xs font-semibold border flex items-center justify-center gap-1.5 bg-[#0b1120] text-slate-100 border-slate-700">
-              <i data-lucide="moon" class="w-4 h-4 text-sky-400"></i> Oscuro
+            <button data-theme="dark" class="theme-btn py-2.5 px-3 rounded-xl text-xs font-bold border flex items-center justify-center gap-1.5 bg-[#4A2417] text-[#FFF6F6] border-[#F4C9CD]/40 shadow-sm">
+              <i data-lucide="palette" class="w-4 h-4 text-[#8EC9E8]"></i> Marrón 60-30-10
             </button>
             <button data-theme="sepia" class="theme-btn py-2.5 px-3 rounded-xl text-xs font-semibold border flex items-center justify-center gap-1.5 bg-[#f4ecd8] text-[#3b2f2f] border-amber-700/30">
               <i data-lucide="sun-dim" class="w-4 h-4 text-amber-700"></i> Sepia

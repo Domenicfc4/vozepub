@@ -465,8 +465,8 @@ export function setSleepTimer(mode, notify = true) {
 
   document.querySelectorAll('.sleep-opt-btn').forEach(btn => {
     const active = String(btn.dataset.sleep) === String(state.sleepMode);
-    btn.style.backgroundColor = active ? 'var(--highlight-bg)' : 'var(--bg-primary)';
-    btn.style.color = active ? 'var(--accent-color)' : 'var(--text-primary)';
+    btn.style.backgroundColor = active ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.12)';
+    btn.style.color = active ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
     btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
   });
 }
