@@ -2,7 +2,7 @@
 
 Lector web de libros ePUB con traducción de inglés a español y lectura en voz alta. La aplicación funciona en el navegador y no requiere instalar un servidor de aplicaciones.
 
-> **Dominio previsto:** [voz-epub.domethedev.com](https://voz-epub.domethedev.com) (pendiente de configurar y publicar).
+**Aplicación:** [epub.domethedev.com](https://epub.domethedev.com)
 
 ## Funcionalidades
 
@@ -41,10 +41,7 @@ Voz Epub es una aplicación estática y puede publicarse desde la raíz del repo
 
 1. Sube el contenido del proyecto a `main` en [Domenicfc4/vozepub](https://github.com/Domenicfc4/vozepub).
 2. En **Settings > Pages**, configura la publicación desde la rama `main` y la carpeta `/ (root)`.
-3. En **Settings > Pages**, establece `voz-epub.domethedev.com` como dominio personalizado.
-4. En el proveedor DNS del dominio, configura el registro CNAME `voz-epub` apuntando a `domenicfc4.github.io`. Espera la propagación DNS y activa HTTPS cuando GitHub Pages lo permita.
-
-El dominio es el destino previsto; su disponibilidad depende de completar la publicación y la configuración DNS.
+3. Si se usa GitHub Pages para alojar el dominio personalizado, configura `epub.domethedev.com` en **Settings > Pages** y el registro CNAME `epub` apuntando a `domenicfc4.github.io` en el proveedor DNS. Espera la propagación DNS y activa HTTPS cuando GitHub Pages lo permita.
 
 ## Estructura del proyecto
 

@@ -209,8 +209,14 @@ export function updateMediaSessionMetadata() {
 
 export function updateAudioUI() {
   const active = state.isSpeaking && !state.isPaused;
+  dom.iconPlayPause = document.getElementById('iconPlayPause');
   dom.iconPlayPause.setAttribute('data-lucide', active ? 'pause' : 'play');
-  if (window.lucide) window.lucide.createIcons();
+  dom.iconPlayPause.classList.remove('lucide-play', 'lucide-pause');
+  if (window.lucide) {
+    window.lucide.createIcons();
+    dom.iconPlayPause = document.getElementById('iconPlayPause');
+  }
+  dom.crosshairIcon = document.getElementById('crosshairIcon');
 
   if (active) {
     dom.miniWaveIndicator.classList.remove('hidden');

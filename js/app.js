@@ -1,5 +1,5 @@
 import { state, SPEED_STEPS, PROSODY_PROFILES } from './state.js';
-import { dom, showToast, loadSettingsAndProgress, applyVisualSettings, updateActiveVoiceBadge, saveSettingsAndProgress } from './ui.js';
+import { dom, showToast, loadSettingsAndProgress, applyVisualSettings, updateActiveVoiceBadge, saveSettingsAndProgress, selectParagraph } from './ui.js';
 import { saveEpubToIDB, loadEpubFromIDB, clearEpubFromIDB } from './storage.js';
 import { parseEpubBuffer, loadChapter, revokeActiveBlobs } from './epub-core.js';
 import { setTranslationMode } from './translator.js';
@@ -156,4 +156,207 @@ function initEvents() {
   document.addEventListener('loadChapterRequest', (e) => loadChapter(e.detail, 0, state.isSpeaking && !state.isPaused));
 
   dom.btnPrevParagraph.addEventListener('click', () => {
-    const wasPlaying = state.isSpeaking &&
+    const wasPlaying = state.isSpeaking && !state.isPaused;
+    if (state.currentParagraphIndex > 0) {
+      selectParagraph(state.currentParagraphIndex - 1, false);
+      if (wasPlaying) startSpeechFromCurrent();
+    } else if (state.currentChapterIndex > 0) {
+      loadChapter(state.currentChapterIndex - 1, 0, wasPlaying);
+    }
+  });
+
+  dom.btnNextParagraph.addEventListener('click', () => {
+    const wasPlaying = state.isSpeaking && !state.isPaused;
+    if (state.currentParagraphIndex < state.paragraphs.length - 1) {
+      selectParagraph(state.currentParagraphIndex + 1, false);
+      if (wasPlaying) startSpeechFromCurrent();
+    } else if (state.currentChapterIndex < state.spine.length - 1) {
+      loadChapter(state.currentChapterIndex + 1, 0, wasPlaying);
+    }
+  });
+
+  dom.btnPrevChapter.addEventListener('click', () => {
+    if (state.currentChapterIndex > 0) {
+      loadChapter(state.currentChapterIndex - 1, 0, state.isSpeaking && !state.isPaused);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+  dom.btnPlayerPrevChap.addEventListener('click', () => {
+    if (state.currentChapterIndex > 0) {
+      loadChapter(state.currentChapterIndex - 1, 0, state.isSpeaking && !state.isPaused);
+    }
+  });
+  dom.btnNextChapter.addEventListener('click', () => {
+    if (state.currentChapterIndex < state.spine.length - 1) {
+      loadChapter(state.currentChapterIndex + 1, 0, state.isSpeaking && !state.isPaused);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+  dom.btnJumpToActive.addEventListener('click', () => {
+    const currentEl = dom.chapterContent.querySelector(`.reader-block[data-index="${state.currentParagraphIndex}"]`);
+    if (currentEl) currentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  dom.btnCycleSpeed.addEventListener('click', () => {
+    const idx = SPEED_STEPS.indexOf(state.settings.rate);
+    setSpeechSpeed(SPEED_STEPS[(idx + 1) % SPEED_STEPS.length]);
+  });
+
+  dom.btnOpenSleepTimer.addEventListener('click', () => {
+    setSleepTimer(state.sleepMode, false);
+    dom.sleepModal.classList.remove('hidden');
+  });
+  dom.btnCloseSleepModal.addEventListener('click', () => dom.sleepModal.classList.add('hidden'));
+  dom.sleepBackdrop.addEventListener('click', () => dom.sleepModal.classList.add('hidden'));
+  document.querySelectorAll('.sleep-opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.sleep === 'chapter' ? 'chapter' : parseInt(btn.dataset.sleep, 10);
+      setSleepTimer(val, true);
+      dom.sleepModal.classList.add('hidden');
+    });
+  });
+
+  dom.btnOpenToc.addEventListener('click', () => dom.tocModal.classList.remove('hidden'));
+  dom.btnCloseToc.addEventListener('click', () => dom.tocModal.classList.add('hidden'));
+  dom.tocBackdrop.addEventListener('click', () => dom.tocModal.classList.add('hidden'));
+  const openSettings = () => {
+    loadBrowserVoices();
+    dom.settingsModal.classList.remove('hidden');
+  };
+  dom.btnOpenSettings.addEventListener('click', openSettings);
+  dom.btnVoiceQualityBadge.addEventListener('click', openSettings);
+  dom.btnCloseSettings.addEventListener('click', () => dom.settingsModal.classList.add('hidden'));
+  dom.settingsBackdrop.addEventListener('click', () => dom.settingsModal.classList.add('hidden'));
+  dom.btnClearSavedBook.addEventListener('click', async () => {
+    stopSpeech();
+    revokeActiveBlobs();
+    await clearEpubFromIDB();
+    dom.tocModal.classList.add('hidden');
+    dom.readerView.classList.add('hidden');
+    dom.welcomeScreen.classList.remove('hidden');
+    dom.headerBookTitle.textContent = 'VozEPUB';
+    dom.btnOpenToc.disabled = true;
+    showToast('Libro cerrado');
+  });
+
+  dom.voiceSelectEs.addEventListener('change', (e) => {
+    state.settings.voiceURIEs = e.target.value;
+    updateActiveVoiceBadge();
+    saveSettingsAndProgress();
+    if (state.isSpeaking && !state.isPaused) startSpeechFromCurrent();
+  });
+  dom.voiceSelectEn.addEventListener('change', (e) => {
+    state.settings.voiceURIEn = e.target.value;
+    updateActiveVoiceBadge();
+    saveSettingsAndProgress();
+    if (state.isSpeaking && !state.isPaused) startSpeechFromCurrent();
+  });
+  dom.btnRefreshVoices.addEventListener('click', () => {
+    loadBrowserVoices(true);
+    showToast('Voces actualizadas');
+  });
+  dom.btnTestVoiceProsody.addEventListener('click', testVoiceAndProsodySample);
+  dom.togglePreferNetworkVoice.addEventListener('change', (e) => {
+    state.settings.preferNetworkVoices = e.target.checked;
+    if (e.target.checked) loadBrowserVoices(true);
+    saveSettingsAndProgress();
+    if (state.isSpeaking && !state.isPaused) startSpeechFromCurrent();
+  });
+  dom.toggleTextClean.addEventListener('change', (e) => {
+    state.settings.cleanTextForTTS = e.target.checked;
+    saveSettingsAndProgress();
+    showToast(e.target.checked ? 'Limpieza de texto activada' : 'Limpieza de texto desactivada');
+    if (state.isSpeaking && !state.isPaused) startSpeechFromCurrent();
+  });
+  document.querySelectorAll('.prosody-profile-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const profile = PROSODY_PROFILES[btn.dataset.prosody];
+      if (profile) {
+        state.settings.prosodyProfile = btn.dataset.prosody;
+        state.settings.pitch = profile.pitch;
+        state.settings.pauseScale = profile.pauseScale;
+        applyVisualSettings();
+        showToast(`Perfil: ${profile.label}`);
+        if (state.isSpeaking && !state.isPaused) startSpeechFromCurrent();
+      }
+    });
+  });
+  dom.sliderPitch.addEventListener('input', (e) => {
+    state.settings.pitch = parseFloat(e.target.value);
+    state.settings.prosodyProfile = 'custom';
+    applyVisualSettings();
+  });
+  dom.sliderPitch.addEventListener('change', () => {
+    if (state.isSpeaking && !state.isPaused) startSpeechFromCurrent();
+  });
+  dom.sliderPauseScale.addEventListener('input', (e) => {
+    state.settings.pauseScale = parseFloat(e.target.value);
+    state.settings.prosodyProfile = 'custom';
+    applyVisualSettings();
+  });
+  dom.sliderPauseScale.addEventListener('change', () => {
+    if (state.isSpeaking && !state.isPaused) startSpeechFromCurrent();
+  });
+  document.querySelectorAll('.speed-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => setSpeechSpeed(parseFloat(btn.dataset.speed)));
+  });
+  document.querySelectorAll('.tap-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.settings.tapMode = btn.dataset.tapMode;
+      applyVisualSettings();
+    });
+  });
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.settings.theme = btn.dataset.theme;
+      applyVisualSettings();
+    });
+  });
+  dom.btnFontDecrease.addEventListener('click', () => {
+    state.settings.fontSize = Math.max(14, state.settings.fontSize - 2);
+    applyVisualSettings();
+  });
+  dom.btnFontIncrease.addEventListener('click', () => {
+    state.settings.fontSize = Math.min(30, state.settings.fontSize + 2);
+    applyVisualSettings();
+  });
+  dom.btnFontSerif.addEventListener('click', () => {
+    state.settings.fontFamily = 'serif';
+    applyVisualSettings();
+  });
+  dom.btnFontSans.addEventListener('click', () => {
+    state.settings.fontFamily = 'sans';
+    applyVisualSettings();
+  });
+  dom.toggleAutoScroll.addEventListener('change', (e) => {
+    state.settings.autoScroll = e.target.checked;
+    saveSettingsAndProgress();
+  });
+  if ('speechSynthesis' in window) {
+    loadBrowserVoices();
+    window.speechSynthesis.onvoiceschanged = () => loadBrowserVoices();
+  }
+}
+
+async function initialize() {
+  if (window.lucide) {
+    window.lucide.createIcons();
+    dom.iconPlayPause = document.getElementById('iconPlayPause');
+    dom.crosshairIcon = document.getElementById('crosshairIcon');
+  } else {
+    console.error('No se pudo cargar Lucide; los iconos no están disponibles.');
+  }
+  const savedProgress = loadSettingsAndProgress();
+  applyVisualSettings();
+  initEvents();
+
+  const cachedBook = await loadEpubFromIDB();
+  if (cachedBook && cachedBook.buffer) {
+    await parseEpubBuffer(cachedBook.buffer, savedProgress);
+    showToast('Lectura restaurada donde la dejaste');
+  }
+}
+
+initialize().catch(err => {
+  console.error('No se pudo iniciar VozEPUB:', err);
+  showToast('No se pudo iniciar la aplicación. Revisa la consola del navegador.');
+});
