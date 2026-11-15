@@ -277,48 +277,29 @@ export function applyVisualSettings() {
   document.body.classList.add(`theme-${state.settings.theme}`);
 
   document.querySelectorAll('.theme-btn').forEach(btn => {
-    const active = btn.dataset.theme === state.settings.theme;
-    btn.style.outline = active ? '2px solid var(--accent-color)' : 'none';
-  });
+    // Helper para pintar botones respetando el contraste
+  const updateBtnStyles = (selector, isActiveCondition, isTransparent = false) => {
+    document.querySelectorAll(selector).forEach(btn => {
+      const active = isActiveCondition(btn);
+      btn.style.backgroundColor = active ? 'var(--accent-color)' : (isTransparent ? 'transparent' : 'var(--bg-primary)');
+      // AQUI ESTA LA MAGIA: usa text-on-accent si está activo
+      btn.style.color = active ? 'var(--text-on-accent, #ffffff)' : 'var(--text-primary)';
+      btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
+    });
+  };
 
-  document.querySelectorAll('.trans-mode-btn').forEach(btn => {
-    const active = btn.dataset.transMode === state.settings.translationMode;
-    btn.style.backgroundColor = active ? 'var(--accent-color)' : 'transparent';
-    btn.style.color = active ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
+  updateBtnStyles('.trans-mode-btn', btn => btn.dataset.transMode === state.settings.translationMode, true);
+  updateBtnStyles('.tap-mode-btn', btn => btn.dataset.tapMode === state.settings.tapMode);
+  updateBtnStyles('.speed-preset-btn', btn => parseFloat(btn.dataset.speed) === state.settings.rate);
+  
+  document.querySelectorAll('.prosody-profile-btn').forEach(btn => {
+    const active = btn.dataset.prosody === state.settings.prosodyProfile;
+    btn.style.backgroundColor = active ? 'var(--accent-color)' : 'var(--bg-secondary)';
+    btn.style.color = active ? 'var(--text-on-accent, #ffffff)' : 'var(--text-primary)';
     btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
   });
-
-  document.querySelectorAll('.tap-mode-btn').forEach(btn => {
-    const active = btn.dataset.tapMode === state.settings.tapMode;
-    btn.style.backgroundColor = active ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.12)';
-    btn.style.color = active ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
-    btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
   });
-  dom.touchModeHint.textContent = state.settings.tapMode === 'double'
-    ? 'Doble toque en un párrafo para hablar'
-    : 'Un toque en un párrafo para hablar';
-
-  document.documentElement.style.setProperty('--reader-font-size', `${state.settings.fontSize}px`);
-  dom.fontSizeLabel.textContent = `${state.settings.fontSize}px`;
-
-  const fontStack = state.settings.fontFamily === 'sans'
-    ? "'Inter', system-ui, -apple-system, sans-serif"
-    : "'Literata', Georgia, serif";
-  document.documentElement.style.setProperty('--reader-font', fontStack);
-
-  dom.btnFontSerif.style.backgroundColor = state.settings.fontFamily === 'serif' ? 'var(--highlight-bg)' : 'transparent';
-  dom.btnFontSerif.style.color = state.settings.fontFamily === 'serif' ? 'var(--accent-color)' : 'var(--text-primary)';
-  dom.btnFontSans.style.backgroundColor = state.settings.fontFamily === 'sans' ? 'var(--highlight-bg)' : 'transparent';
-  dom.btnFontSans.style.color = state.settings.fontFamily === 'sans' ? 'var(--accent-color)' : 'var(--text-primary)';
-
-  dom.btnCycleSpeed.textContent = `${state.settings.rate}x`;
-  dom.speedValueLabel.textContent = `${state.settings.rate}x`;
-  document.querySelectorAll('.speed-preset-btn').forEach(btn => {
-    const isSelected = parseFloat(btn.dataset.speed) === state.settings.rate;
-    btn.style.backgroundColor = isSelected ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.12)';
-    btn.style.color = isSelected ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
-    btn.style.borderColor = isSelected ? 'var(--accent-color)' : 'var(--border-color)';
-  });
+    
 
   if (dom.togglePreferNetworkVoice) dom.togglePreferNetworkVoice.checked = state.settings.preferNetworkVoices !== false;
   if (dom.toggleTextClean) dom.toggleTextClean.checked = state.settings.cleanTextForTTS !== false;

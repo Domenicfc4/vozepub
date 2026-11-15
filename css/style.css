@@ -54,7 +54,7 @@ body.theme-light {
   --text-primary: #38190F;
   --text-secondary: #6E3827;
   --text-on-secondary: #4A2417;
-  --accent-color: #2B7EA8;
+  --accent-color: #1eb5c9;
   --text-on-accent: #FFFFFF;
   --accent-secondary: #F4C9CD;
   --highlight-bg: rgba(142, 201, 232, 0.22);
@@ -76,6 +76,22 @@ body.theme-sepia {
   --highlight-bg: rgba(180, 83, 9, 0.14);
   --highlight-border: #d97706;
   --border-color: rgba(59, 47, 47, 0.15);
+}
+
+/* Tema Oscuro OLED */
+body.theme-dark {
+  --bg-primary: #0b1120;
+  --bg-secondary: #151f32;
+  --bg-surface: rgba(21, 31, 50, 0.95);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-on-secondary: #e2e8f0;
+  --accent-color: #38bdf8;
+  --text-on-accent: #0b1120;
+  --accent-secondary: #c084fc;
+  --highlight-bg: rgba(56, 189, 248, 0.16);
+  --highlight-border: #38bdf8;
+  --border-color: rgba(148, 163, 184, 0.15);
 }
 
 * {
