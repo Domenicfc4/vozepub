@@ -252,9 +252,14 @@ export function renderTocList() {
   state.spine.forEach((item, index) => {
     const isCurrent = index === state.currentChapterIndex;
     const btn = document.createElement('button');
-    btn.className = `w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium flex items-center justify-between gap-2 transition ${isCurrent ? 'font-bold shadow-xs' : 'hover:opacity-80'}`;
-    btn.style.backgroundColor = isCurrent ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.08)';
-    btn.style.color = isCurrent ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
+    
+    // Se añade un borde sutil para que luzcan idénticos a los botones de ajustes
+    btn.className = `w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium flex items-center justify-between gap-2 transition border ${isCurrent ? 'font-bold shadow-sm' : 'hover:opacity-80'}`;
+    
+    // Magia de variables CSS: el botón inactivo es bg-primary, el activo es accent-color
+    btn.style.backgroundColor = isCurrent ? 'var(--accent-color)' : 'var(--bg-primary)';
+    btn.style.color = isCurrent ? 'var(--text-on-accent, #ffffff)' : 'var(--text-primary)';
+    btn.style.borderColor = isCurrent ? 'var(--accent-color)' : 'var(--border-color)';
 
     btn.innerHTML = `
       <span class="truncate">${index + 1}. ${item.title}</span>
@@ -263,12 +268,13 @@ export function renderTocList() {
 
     btn.addEventListener('click', () => {
       dom.tocModal.classList.add('hidden');
-      // Despachamos evento al cargar desde el índice
       const evt = new CustomEvent('loadChapterRequest', { detail: index });
       document.dispatchEvent(evt);
     });
+    
     dom.tocList.appendChild(btn);
   });
+  
   if (window.lucide) window.lucide.createIcons();
 }
 

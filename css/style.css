@@ -80,14 +80,14 @@ body.theme-sepia {
 
 /* Tema Oscuro OLED */
 body.theme-dark {
-  --bg-primary: #0b1120;
+  --bg-primary: #1b1a2e;
   --bg-secondary: #151f32;
   --bg-surface: rgba(21, 31, 50, 0.95);
   --text-primary: #e2e8f0;
   --text-secondary: #94a3b8;
   --text-on-secondary: #e2e8f0;
   --accent-color: #38bdf8;
-  --text-on-accent: #0b1120;
+  --text-on-accent: #1b1a2e;
   --accent-secondary: #c084fc;
   --highlight-bg: rgba(56, 189, 248, 0.16);
   --highlight-border: #38bdf8;
