@@ -88,20 +88,19 @@
     </div>
 
     <!-- Banner de estado de traducción en vivo -->
-    <div id="translationStatusBar"
-         class="hidden px-3 py-1.5 text-xs border-t items-center justify-between gap-2 shadow-inner"
-         style="background-color: var(--bg-secondary); border-color: rgba(74, 36, 23, 0.15);">
-      <div class="flex items-center gap-2 truncate">
-        <div id="translationSpinner" class="w-3.5 h-3.5 border-2 border-[#4A2417] border-t-transparent rounded-full animate-spin shrink-0"></div>
-        <span id="translationStatusText" class="truncate font-bold text-[#4A2417]">Traduciendo capítulo de Inglés a Español...</span>
+  <div id="translationStatusBar"
+          class="hidden px-3 py-1.5 text-xs border-t items-center justify-between gap-2"
+          style="background-color: var(--bg-secondary); border-color: var(--border-color); color: var(--text-primary);">
+        
+        <div class="flex items-center gap-2 truncate">
+          <!-- AQUI: Spinner dinámico usando border-color en línea -->
+          <div id="translationSpinner" class="w-3.5 h-3.5 border-2 rounded-full animate-spin shrink-0" 
+              style="border-color: var(--accent-color); border-top-color: transparent;"></div>
+          <span id="translationStatusText" class="truncate font-medium">Traduciendo capítulo de Inglés a Español...</span>
+        </div>
+        
+        <span id="translationCountBadge" class="font-bold shrink-0" style="color: var(--accent-color);">0/0</span>
       </div>
-      <span id="translationCountBadge" class="font-black shrink-0 text-[#4A2417]">0/0</span>
-    </div>
-
-    <!-- Barra de progreso de lectura del capítulo -->
-    <div class="w-full h-1 bg-slate-500/10 overflow-hidden">
-      <div id="chapterProgressBar" class="h-full transition-all duration-300 w-0" style="background-color: var(--accent-color);"></div>
-    </div>
   </header>
 
   <!-- ================= CONTENIDO PRINCIPAL ================= -->
@@ -202,15 +201,22 @@
     <section id="readerView" class="hidden">
       <!-- Cabecera del Capítulo Actual -->
       <div class="mb-4 pb-3 border-b flex flex-col gap-1.5" style="border-color: var(--border-color);">
-        <div class="flex items-center justify-between text-xs uppercase tracking-wider font-bold">
-          <span id="chapterCounterBadge" class="px-2.5 py-1 rounded-lg shadow-xs" style="background-color: var(--bg-secondary); color: #4A2417;">Capítulo 1</span>
-          <span id="paragraphCounterBadge" class="font-bold" style="color: var(--accent-color);">Párrafo 1 / 1</span>
+        
+        <div class="flex items-center justify-between text-xs uppercase tracking-wider font-semibold"
+             style="color: var(--accent-color);">
+          <!-- AQUI: Usamos var(--text-primary) en lugar del marrón fijo -->
+          <span id="chapterCounterBadge" class="px-2.5 py-1 rounded-lg shadow-sm" 
+                style="background-color: var(--bg-secondary); color: var(--text-primary);">Capítulo 1</span>
+          <span id="paragraphCounterBadge">Párrafo 1 / 1</span>
         </div>
-        <h2 id="currentChapterTitle" class="text-lg sm:text-xl font-bold leading-snug">Título del Capítulo</h2>
+        
+        <h2 id="currentChapterTitle" class="text-lg sm:text-xl font-bold leading-snug" style="color: var(--text-primary);">Título del Capítulo</h2>
+        
         <div class="flex flex-wrap items-center justify-between gap-2 text-xs" style="color: var(--text-secondary);">
           <span id="currentBookAuthor"></span>
-          <span id="touchModeHint" class="px-2.5 py-0.5 rounded-md border text-[11px] font-semibold"
-                style="background-color: var(--bg-secondary); border-color: rgba(74, 36, 23, 0.15); color: #4A2417;">
+          <!-- AQUI: Le asignamos color: var(--text-secondary) explícitamente -->
+          <span id="touchModeHint" class="px-2 py-0.5 rounded-md border text-[11px]"
+                style="background-color: var(--bg-secondary); border-color: var(--border-color); color: var(--text-secondary);">
             Doble toque en un párrafo para hablar
           </span>
         </div>
