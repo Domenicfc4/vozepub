@@ -24,6 +24,7 @@ function downloadSelfHtml() {
   }
 }
 
+// --- MANEJO DE ARCHIVOS EPUB ---
 async function handleFileUpload(file) {
   if (!file) return;
   try {
@@ -36,6 +37,7 @@ async function handleFileUpload(file) {
   }
 }
 
+// --- AJUSTE DE VELOCIDAD DE HABLA ---
 function setSpeechSpeed(newSpeed) {
   state.settings.rate = newSpeed;
   applyVisualSettings();
@@ -47,6 +49,7 @@ function setSpeechSpeed(newSpeed) {
   }
 }
 
+// --- CARGA DE VOCES DEL NAVEGADOR ---
 function loadBrowserVoices(forceAutoSelectBest = false) {
   if (!('speechSynthesis' in window)) return;
   const rawVoices = window.speechSynthesis.getVoices() || [];
@@ -115,6 +118,7 @@ async function generateAndLoadEnglishDemoEpub() {
   showToast('Libro en Inglés cargado (Bilingüe)');
 }
 
+// --- GENERACIÓN Y CARGA DEL EPUB DE DEMO EN ESPAÑOL ---
 async function generateAndLoadSpanishDemoEpub() {
   dom.loadingIndicator.classList.remove('hidden');
   dom.welcomeScreen.classList.add('hidden');
@@ -337,6 +341,7 @@ function initEvents() {
   }
 }
 
+// --- INICIALIZACIÓN DE LA APLICACIÓN ---
 async function initialize() {
   if (window.lucide) {
     window.lucide.createIcons();
@@ -356,6 +361,7 @@ async function initialize() {
   }
 }
 
+// --- ERROR DE INICIALIZACIÓN DE LA APLICACIÓN ---
 initialize().catch(err => {
   console.error('No se pudo iniciar VozEPUB:', err);
   showToast('No se pudo iniciar la aplicación. Revisa la consola del navegador.');

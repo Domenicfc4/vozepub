@@ -1,6 +1,8 @@
 import { state, APP_STORAGE_KEY, TRANS_CACHE_KEY } from './state.js';
 import { isNetworkVoice } from './tts-engine.js';
 
+
+// --- ELEMENTOS DEL DOM ---
 export const dom = {
   welcomeScreen: document.getElementById('welcomeScreen'),
   loadingIndicator: document.getElementById('loadingIndicator'),
@@ -75,6 +77,7 @@ export const dom = {
   toastMessage: document.getElementById('toastMessage')
 };
 
+// --- FUNCIONES DE INTERFAZ DE USUARIO ---
 export function showToast(msg, duration = 2600) {
   dom.toastMessage.textContent = msg;
   dom.toastContainer.classList.remove('opacity-0', '-translate-y-2');
@@ -86,6 +89,7 @@ export function showToast(msg, duration = 2600) {
   }, duration);
 }
 
+// --- GUARDADO Y CARGA DE CONFIGURACIONES Y PROGRESO ---
 export function saveSettingsAndProgress() {
   try {
     const payload = {
@@ -102,6 +106,7 @@ export function saveSettingsAndProgress() {
   }
 }
 
+// --- CARGA DE CONFIGURACIONES AL INICIO ---
 export function loadSettingsAndProgress() {
   try {
     const rawTrans = localStorage.getItem(TRANS_CACHE_KEY);
@@ -119,9 +124,11 @@ export function loadSettingsAndProgress() {
   }
 }
 
+// --- ACTUALIZACIÓN DEL DOM DE PÁRRAFOS TRADUCIDOS ---
 // Escucha el evento lanzado por epub-core.js al requerir una traducción individual
 document.addEventListener('updateParagraphDOM', (e) => updateParagraphDOM(e.detail));
 
+// --- ACTUALIZACIÓN DE UN PÁRRAFO INDIVIDUAL ---
 export function updateParagraphDOM(paraIndex) {
   const block = dom.chapterContent.querySelector(`.reader-block[data-index="${paraIndex}"]`);
   if (!block) return;
@@ -179,12 +186,14 @@ export function updateParagraphDOM(paraIndex) {
   }
 }
 
+// --- REFRESCO DE TODOS LOS PÁRRAFOS ---
 export function refreshAllParagraphsDOM() {
   for (let i = 0; i < state.paragraphs.length; i++) {
     updateParagraphDOM(i);
   }
 }
 
+// --- OBTENCIÓN DEL TEXTO ACTIVO PARA LA LECTURA ---
 export function getActiveParagraphTextForSpeech(paraIndex) {
   const mode = state.settings.translationMode;
   if (mode === 'translated' || mode === 'bilingual' || state.individualTransShown[paraIndex]) {
@@ -193,11 +202,13 @@ export function getActiveParagraphTextForSpeech(paraIndex) {
   return state.paragraphs[paraIndex] || '';
 }
 
+// --- ACTUALIZACIÓN DEL FRAGMENTO DE TEXTO DEL REPRODUCTOR ---
 export function updatePlayerSnippet() {
   const text = getActiveParagraphTextForSpeech(state.currentParagraphIndex);
   dom.playerSnippetText.textContent = text || 'Selecciona un párrafo...';
 }
 
+// --- SELECCIÓN DE PÁRRAFO ACTIVO ---
 export function selectParagraph(index, scrollInstant = false, allowAutoScroll = true) {
   if (state.paragraphs.length === 0) return;
   const clamped = Math.min(Math.max(0, index), state.paragraphs.length - 1);
@@ -226,6 +237,7 @@ export function selectParagraph(index, scrollInstant = false, allowAutoScroll = 
   saveSettingsAndProgress();
 }
 
+// --- ACTUALIZACIÓN DEL INDICADOR DE VOZ ACTIVA ---
 export function updateActiveVoiceBadge() {
   if (!dom.voiceQualityText) return;
   const shouldReadSpanish =
@@ -247,6 +259,7 @@ export function updateActiveVoiceBadge() {
   }
 }
 
+// --- RENDERIZADO DE LA LISTA DE CONTENIDO ---
 export function renderTocList() {
   dom.tocList.innerHTML = '';
   state.spine.forEach((item, index) => {
@@ -313,6 +326,7 @@ export function renderTocList() {
    
 }
 
+// --- APLICACIÓN DE CONFIGURACIONES VISUALES ---
 export function applyVisualSettings() {
   document.body.classList.remove('theme-dark', 'theme-sepia', 'theme-light');
   document.body.classList.add(`theme-${state.settings.theme}`);
