@@ -283,12 +283,14 @@ export function applyVisualSettings() {
   document.body.classList.add(`theme-${state.settings.theme}`);
 
   document.querySelectorAll('.theme-btn').forEach(btn => {
-    // Helper para pintar botones respetando el contraste
+    const active = btn.dataset.theme === state.settings.theme;
+    btn.style.outline = active ? '2px solid var(--accent-color)' : 'none';
+  });
+
   const updateBtnStyles = (selector, isActiveCondition, isTransparent = false) => {
     document.querySelectorAll(selector).forEach(btn => {
       const active = isActiveCondition(btn);
       btn.style.backgroundColor = active ? 'var(--accent-color)' : (isTransparent ? 'transparent' : 'var(--bg-primary)');
-      // AQUI ESTA LA MAGIA: usa text-on-accent si está activo
       btn.style.color = active ? 'var(--text-on-accent, #ffffff)' : 'var(--text-primary)';
       btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
     });
@@ -298,35 +300,53 @@ export function applyVisualSettings() {
   updateBtnStyles('.tap-mode-btn', btn => btn.dataset.tapMode === state.settings.tapMode);
   updateBtnStyles('.speed-preset-btn', btn => parseFloat(btn.dataset.speed) === state.settings.rate);
   updateBtnStyles('.sleep-opt-btn', btn => String(btn.dataset.sleep) === String(state.sleepMode));
-  
+
   document.querySelectorAll('.prosody-profile-btn').forEach(btn => {
     const active = btn.dataset.prosody === state.settings.prosodyProfile;
     btn.style.backgroundColor = active ? 'var(--accent-color)' : 'var(--bg-secondary)';
     btn.style.color = active ? 'var(--text-on-accent, #ffffff)' : 'var(--text-primary)';
     btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
   });
-  });
-    
+
+  dom.touchModeHint.textContent = state.settings.tapMode === 'double'
+    ? 'Doble toque en un párrafo para hablar'
+    : 'Un toque en un párrafo para hablar';
+
+  // --- AQUÍ ESTÁN LAS LÍNEAS RECUPERADAS PARA TAMAÑO Y FUENTE ---
+  document.documentElement.style.setProperty('--reader-font-size', `${state.settings.fontSize}px`);
+  dom.fontSizeLabel.textContent = `${state.settings.fontSize}px`;
+
+  const fontStack = state.settings.fontFamily === 'sans'
+    ? "'Inter', system-ui, -apple-system, sans-serif"
+    : "'Literata', Georgia, serif";
+  document.documentElement.style.setProperty('--reader-font', fontStack);
+
+  // Colores dinámicos para los botones Serif y Sans
+  dom.btnFontSerif.style.backgroundColor = state.settings.fontFamily === 'serif' ? 'var(--accent-color)' : 'transparent';
+  dom.btnFontSerif.style.color = state.settings.fontFamily === 'serif' ? 'var(--text-on-accent, #ffffff)' : 'var(--text-primary)';
+  
+  dom.btnFontSans.style.backgroundColor = state.settings.fontFamily === 'sans' ? 'var(--accent-color)' : 'transparent';
+  dom.btnFontSans.style.color = state.settings.fontFamily === 'sans' ? 'var(--text-on-accent, #ffffff)' : 'var(--text-primary)';
+
+  // Textos de las velocidades
+  dom.btnCycleSpeed.textContent = `${state.settings.rate}x`;
+  dom.speedValueLabel.textContent = `${state.settings.rate}x`;
+  // --------------------------------------------------------------
 
   if (dom.togglePreferNetworkVoice) dom.togglePreferNetworkVoice.checked = state.settings.preferNetworkVoices !== false;
   if (dom.toggleTextClean) dom.toggleTextClean.checked = state.settings.cleanTextForTTS !== false;
+  
   if (dom.sliderPitch && dom.pitchValueLabel) {
     const pitchVal = +(state.settings.pitch || 0.94).toFixed(2);
     dom.sliderPitch.value = pitchVal;
     dom.pitchValueLabel.textContent = pitchVal.toFixed(2);
   }
+  
   if (dom.sliderPauseScale && dom.pauseScaleLabel) {
     const pauseVal = +(state.settings.pauseScale || 1.0).toFixed(1);
     dom.sliderPauseScale.value = pauseVal;
     dom.pauseScaleLabel.textContent = `${pauseVal}x`;
   }
-
-  document.querySelectorAll('.prosody-profile-btn').forEach(btn => {
-    const active = btn.dataset.prosody === state.settings.prosodyProfile;
-    btn.style.backgroundColor = active ? 'var(--accent-color)' : 'rgba(244, 201, 205, 0.12)';
-    btn.style.color = active ? 'var(--text-on-accent, #4A2417)' : 'var(--text-primary)';
-    btn.style.borderColor = active ? 'var(--accent-color)' : 'var(--border-color)';
-  });
 
   dom.toggleAutoScroll.checked = !!state.settings.autoScroll;
   updateActiveVoiceBadge();
