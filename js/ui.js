@@ -276,35 +276,41 @@ export function renderTocList() {
   });
   
   if (window.lucide) window.lucide.createIcons();
-  
- // --- LÓGICA DE LA BARRA DE PROGRESO ---
-  const progressSlider = document.getElementById('tocProgressSlider');
+
+// --- LÓGICA DE LA BARRA DE PROGRESO DE LECTURA ---
+  const oldSlider = document.getElementById('tocProgressSlider');
   const progressLabel = document.getElementById('tocProgressLabel');
   
-  if (progressSlider && state.spine.length > 0) {
-    // 1. Actualizar la barra visualmente según el capítulo actual
-    const percent = Math.round((state.currentChapterIndex / (state.spine.length - 1)) * 100) || 0;
+  if (oldSlider && progressLabel && state.spine && state.spine.length > 0) {
+    // Calcular porcentaje real y proteger contra división por cero
+    const totalChapters = Math.max(1, state.spine.length - 1);
+    const percent = Math.round((state.currentChapterIndex / totalChapters) * 100);
+    
+    // Clonamos el slider para eliminar eventos "fantasma" anteriores
+    const progressSlider = oldSlider.cloneNode(true);
+    oldSlider.parentNode.replaceChild(progressSlider, oldSlider);
+
     progressSlider.value = percent;
     progressLabel.textContent = `${percent}%`;
 
-    // 2. Evento mientras arrastras el dedo (solo actualiza el número)
-    progressSlider.oninput = (e) => {
+    // Actualiza el número visualmente mientras arrastras
+    progressSlider.addEventListener('input', (e) => {
       progressLabel.textContent = `${e.target.value}%`;
-    };
+    });
 
-    // 3. Evento al soltar el dedo (ejecuta el salto de capítulo)
-    progressSlider.onchange = (e) => {
+    // Ejecuta el salto exacto cuando sueltas el dedo
+    progressSlider.addEventListener('change', (e) => {
       const selectedPercent = parseInt(e.target.value, 10);
-      // Calculamos qué capítulo corresponde a ese porcentaje
-      const targetIndex = Math.floor((selectedPercent / 100) * (state.spine.length - 1));
+      const targetIndex = Math.floor((selectedPercent / 100) * totalChapters);
       
-      // Ocultamos el panel lateral
+      // Cerramos el modal lateral
       document.getElementById('tocModal').classList.add('hidden');
       
-      // Disparamos el evento para que la app cargue el nuevo destino
+      // Disparamos el evento para que la app cargue el capítulo correspondiente
       document.dispatchEvent(new CustomEvent('loadChapterRequest', { detail: targetIndex }));
-    };
-  } 
+    });
+  }
+   
 }
 
 export function applyVisualSettings() {
