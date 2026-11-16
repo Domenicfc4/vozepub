@@ -239,7 +239,7 @@ export function updateActiveVoiceBadge() {
 
   if (activeVoice) {
     const net = isNetworkVoice(activeVoice);
-    dom.voiceQualityText.textContent = net ? '☁️ HD Red' : '📱 Local';
+    dom.voiceQualityText.textContent = net ? '☁️ HD Red' : '📱 Config';
     dom.btnVoiceQualityBadge.style.borderColor = net ? 'var(--accent-color)' : 'var(--border-color)';
     dom.btnVoiceQualityBadge.style.color = net ? 'var(--accent-color)' : 'var(--text-secondary)';
   } else {
