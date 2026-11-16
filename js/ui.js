@@ -297,6 +297,7 @@ export function applyVisualSettings() {
   updateBtnStyles('.trans-mode-btn', btn => btn.dataset.transMode === state.settings.translationMode, true);
   updateBtnStyles('.tap-mode-btn', btn => btn.dataset.tapMode === state.settings.tapMode);
   updateBtnStyles('.speed-preset-btn', btn => parseFloat(btn.dataset.speed) === state.settings.rate);
+  updateBtnStyles('.sleep-opt-btn', btn => String(btn.dataset.sleep) === String(state.sleepMode));
   
   document.querySelectorAll('.prosody-profile-btn').forEach(btn => {
     const active = btn.dataset.prosody === state.settings.prosodyProfile;
