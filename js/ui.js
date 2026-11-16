@@ -276,6 +276,35 @@ export function renderTocList() {
   });
   
   if (window.lucide) window.lucide.createIcons();
+  
+ // --- LÓGICA DE LA BARRA DE PROGRESO ---
+  const progressSlider = document.getElementById('tocProgressSlider');
+  const progressLabel = document.getElementById('tocProgressLabel');
+  
+  if (progressSlider && state.spine.length > 0) {
+    // 1. Actualizar la barra visualmente según el capítulo actual
+    const percent = Math.round((state.currentChapterIndex / (state.spine.length - 1)) * 100) || 0;
+    progressSlider.value = percent;
+    progressLabel.textContent = `${percent}%`;
+
+    // 2. Evento mientras arrastras el dedo (solo actualiza el número)
+    progressSlider.oninput = (e) => {
+      progressLabel.textContent = `${e.target.value}%`;
+    };
+
+    // 3. Evento al soltar el dedo (ejecuta el salto de capítulo)
+    progressSlider.onchange = (e) => {
+      const selectedPercent = parseInt(e.target.value, 10);
+      // Calculamos qué capítulo corresponde a ese porcentaje
+      const targetIndex = Math.floor((selectedPercent / 100) * (state.spine.length - 1));
+      
+      // Ocultamos el panel lateral
+      document.getElementById('tocModal').classList.add('hidden');
+      
+      // Disparamos el evento para que la app cargue el nuevo destino
+      document.dispatchEvent(new CustomEvent('loadChapterRequest', { detail: targetIndex }));
+    };
+  } 
 }
 
 export function applyVisualSettings() {
