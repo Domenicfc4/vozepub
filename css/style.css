@@ -30,20 +30,12 @@
   --reader-line-height: 1.75;
 }
 
-/* Tema Marrón 60-30-10 (Por defecto) */
-body.theme-dark {
-  --bg-primary: #4A2417;
-  --bg-surface: rgba(74, 36, 23, 0.96);
-  --text-primary: #FFF6F6;
-  --text-secondary: #E8BFC2;
-  --bg-secondary: #F4C9CD;
-  --accent-secondary: #F4C9CD;
-  --text-on-secondary: #4A2417;
-  --accent-color: #8EC9E8;
-  --text-on-accent: #4A2417;
-  --highlight-bg: rgba(142, 201, 232, 0.18);
-  --highlight-border: #8EC9E8;
-  --border-color: rgba(244, 201, 205, 0.22);
+/* Optimización tipográfica y renderizado de texto */
+html {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Tema Claro */
@@ -219,3 +211,53 @@ input[type="checkbox"] {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-color);
 }
+
+/* =========================================================
+   COMPONENTE DE DESPEDIDA Y CONFIRMACIÓN (FAREWELL)
+   Tipografía: Unificada estrictamente bajo 'Inter' (sin conflicto visual)
+   Jerarquía: font-weight 800 (Título "Adiós") vs 400 (Cuerpo del mensaje)
+   Acciones: font-weight 700 (Acción principal) vs 500 (Acción secundaria)
+   ========================================================= */
+.farewell-dialog {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  contain: content;
+}
+
+.farewell-title {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.5rem;   /* 24px */
+  font-weight: 800;    /* ExtraBold para máximo contraste jerárquico */
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.farewell-message {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 400;    /* Regular para lectura descansada y sin saturación */
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.farewell-btn-primary {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 700;    /* Bold para botón de acción principal */
+  background-color: var(--accent-color);
+  color: var(--text-on-accent, #4A2417);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.farewell-btn-secondary {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;    /* Medium para acción secundaria neutra */
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+

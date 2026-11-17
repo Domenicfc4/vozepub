@@ -15,10 +15,10 @@
   <!-- Lucide Icons (Versión estable) -->
   <script src="https://unpkg.com/lucide@0.368.0"></script>
   
-  <!-- Google Fonts: Inter y Literata -->
+  <!-- Google Fonts: Inter (UI y Jerarquía 400..800) y Literata (Cuerpo de Lectura ePUB) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="./css/style.css">
 </head>
@@ -104,39 +104,9 @@
       
       <!-- Barra de progreso de lectura del capítulo -->
       <div class="w-full h-1 bg-slate-500/10 overflow-hidden">
-      <div id="chapterProgressBar" class="h-full transition-all duration-300 w-0" style="background-color: var(--accent-color);"></div>
-
+        <div id="chapterProgressBar" class="h-full transition-all duration-300 w-0" style="background-color: var(--accent-color);"></div>
+      </div>
   </header>
-
-  <!-- ================= CONTENIDO PRINCIPAL ================= -->
-  <main class="flex-1 w-full pt-4 pb-48">
-
-   <!DOCTYPE html>
-<html lang="es" class="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#4A2417" />
-  <title>VozEPUB Pro — Lector ePUB con Traductor EN➔ES y Voz Alta</title>
-  
-  <!-- Tailwind CSS (Versión específica y estable por CDN) -->
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  
-  <!-- JSZip para descomprimir archivos .epub directamente en Chrome -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  
-  <!-- Lucide Icons (Versión estable) -->
-  <script src="https://unpkg.com/lucide@0.368.0"></script>
-  
-  <!-- Google Fonts: Inter y Literata -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="./css/style.css">
-</head>
-<body class="theme-dark min-h-screen flex flex-col selection:bg-[#8EC9E8] selection:text-[#4A2417]">
-
 
   <!-- ================= CONTENIDO PRINCIPAL ================= -->
   <main class="flex-1 w-full pt-4 pb-48">
@@ -154,12 +124,12 @@
           <i data-lucide="book-open-check" class="w-8 h-8"></i>
         </div>
 
-        <!-- Títulos dinámicos -->
-        <h1 class="text-xl sm:text-2xl font-black mb-2 tracking-tight" style="color: var(--text-primary);">
+        <!-- Títulos dinámicos con Jerarquía Tipográfica Clara -->
+        <h1 class="text-xl sm:text-2xl font-extrabold mb-2 tracking-tight" style="font-weight: 800; color: var(--text-primary);">
           Lector ePUB + Traductor EN ➔ ES
         </h1>
-        <p class="text-xs sm:text-sm mb-5 max-w-lg mx-auto leading-relaxed font-medium" style="color: var(--text-secondary);">
-          Optimizado para <strong style="color: var(--text-primary);">Google Chrome en tu celular</strong>. Abre cualquier libro en inglés o español, tradúcelo al instante y escúchalo en voz alta con temporizador de sueño.
+        <p class="text-xs sm:text-sm mb-5 max-w-lg mx-auto leading-relaxed font-normal" style="font-weight: 400; color: var(--text-secondary);">
+          Optimizado para <strong style="color: var(--text-primary); font-weight: 700;">Google Chrome en tu celular</strong>. Abre cualquier libro en inglés o español, tradúcelo al instante y escúchalo en voz alta con temporizador de sueño.
         </p>
 
         <!-- Zona táctil para subir ePUB -->
@@ -633,6 +603,55 @@
         </div>
 
       </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL DE DESPEDIDA / CONFIRMACIÓN ================= -->
+  <div id="farewellModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="farewellTitle">
+    <div id="farewellBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
+
+    <div class="farewell-dialog relative z-10 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 border shadow-2xl transition-all duration-200">
+      
+      <!-- Icono de Estado y Botón de Descarte -->
+      <div class="flex items-start justify-between mb-4">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm"
+             style="background-color: var(--highlight-bg); color: var(--accent-color);">
+          <i data-lucide="book-check" class="w-6 h-6"></i>
+        </div>
+        <button id="btnCloseFarewellModal"
+                class="p-2 rounded-xl transition hover:opacity-80 active:scale-95"
+                style="background-color: var(--bg-primary); color: var(--text-primary);"
+                aria-label="Cerrar diálogo">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Jerarquía Tipográfica Estricta: Font-weight 800 para el Título -->
+      <h3 id="farewellTitle" class="farewell-title">
+        Adiós
+      </h3>
+
+      <!-- Cuerpo del Mensaje: Font-weight 400 para el texto informativo -->
+      <p class="farewell-message">
+        Tu progreso de lectura, capítulos traducidos y preferencias de voz han sido guardados de manera segura en tu navegador. Puedes regresar en cualquier momento y continuar donde lo dejaste.
+      </p>
+
+      <!-- Botones de Acción: Jerarquía de contraste funcional (700 vs 500) -->
+      <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-2.5">
+        <button id="btnCancelFarewell"
+                type="button"
+                class="farewell-btn-secondary w-full sm:w-auto px-4 py-2.5 rounded-xl transition active:scale-95 hover:opacity-85">
+          Continuar leyendo
+        </button>
+
+        <button id="btnConfirmFarewell"
+                type="button"
+                class="farewell-btn-primary w-full sm:w-auto px-5 py-2.5 rounded-xl shadow-md transition active:scale-95 hover:opacity-95 flex items-center justify-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          <span>Cerrar libro</span>
+        </button>
+      </div>
+
     </div>
   </div>
 

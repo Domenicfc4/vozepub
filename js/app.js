@@ -230,16 +230,33 @@ function initEvents() {
   dom.btnVoiceQualityBadge.addEventListener('click', openSettings);
   dom.btnCloseSettings.addEventListener('click', () => dom.settingsModal.classList.add('hidden'));
   dom.settingsBackdrop.addEventListener('click', () => dom.settingsModal.classList.add('hidden'));
-  dom.btnClearSavedBook.addEventListener('click', async () => {
+  // --- Control de Modal de Despedida / Cierre de Libro ---
+  const closeFarewellModal = () => {
+    if (dom.farewellModal) dom.farewellModal.classList.add('hidden');
+  };
+
+  dom.btnCloseFarewellModal?.addEventListener('click', closeFarewellModal);
+  dom.btnCancelFarewell?.addEventListener('click', closeFarewellModal);
+  dom.farewellBackdrop?.addEventListener('click', closeFarewellModal);
+
+  dom.btnClearSavedBook.addEventListener('click', () => {
+    dom.tocModal.classList.add('hidden');
+    if (dom.farewellModal) {
+      dom.farewellModal.classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    }
+  });
+
+  dom.btnConfirmFarewell?.addEventListener('click', async () => {
+    closeFarewellModal();
     stopSpeech();
     revokeActiveBlobs();
     await clearEpubFromIDB();
-    dom.tocModal.classList.add('hidden');
     dom.readerView.classList.add('hidden');
     dom.welcomeScreen.classList.remove('hidden');
     dom.headerBookTitle.textContent = 'VozEPUB';
     dom.btnOpenToc.disabled = true;
-    showToast('Libro cerrado');
+    showToast('Libro cerrado. ¡Hasta pronto!');
   });
 
   dom.voiceSelectEs.addEventListener('change', (e) => {
