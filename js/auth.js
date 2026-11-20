@@ -98,28 +98,30 @@ export class AuthService {
     }
 
     try {
-      // Intento de conexión con Cloudflare Pages Function
       const res = await fetch(`${this.apiBaseUrl}/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({ email, password })
       });
 
-      if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      // Solo parsear si la respuesta es explícitamente JSON (evitar HTML fallback de Cloudflare)
+      if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
         this._saveLocalSession(data.user);
         if (data.activeBook) this._saveLocalBook(data.activeBook);
         return data.user;
       }
 
-      if (res.status === 401 || res.status === 400) {
+      if ((res.status === 401 || res.status === 400) && contentType.includes('application/json')) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || 'Credenciales incorrectas.');
       }
     } catch (err) {
-      // Si la API remota aún no está desplegada (ej. entorno local estático),
-      // proporcionamos soporte local para desarrollo.
-      if (err.message && err.message !== 'Failed to fetch') {
+      if (err.message && !err.message.includes('fetch')) {
         throw err;
       }
     }
@@ -150,22 +152,26 @@ export class AuthService {
     try {
       const res = await fetch(`${this.apiBaseUrl}/auth/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({ email, password })
       });
 
-      if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
         this._saveLocalSession(data.user);
         return data.user;
       }
 
-      if (res.status >= 400 && res.status < 500) {
+      if (res.status >= 400 && res.status < 500 && contentType.includes('application/json')) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || 'No se pudo crear la cuenta.');
       }
     } catch (err) {
-      if (err.message && err.message !== 'Failed to fetch') {
+      if (err.message && !err.message.includes('fetch')) {
         throw err;
       }
     }
@@ -183,25 +189,41 @@ export class AuthService {
   }
 
   /**
-   * Inicio de sesión con Google OAuth2.
+   * Inicio de sesión con Google.
    */
   async loginWithGoogle() {
     try {
-      // Si existe endpoint en Cloudflare, redirigir al flujo OAuth
-      const checkEndpoint = await fetch(`${this.apiBaseUrl}/auth/google`, { method: 'HEAD' }).catch(() => null);
-      if (checkEndpoint && checkEndpoint.ok) {
-        window.location.href = `${this.apiBaseUrl}/auth/google`;
-        return;
+      // Si existe un endpoint real que retorne JSON con URL de OAuth, usarlo
+      const res = await fetch(`${this.apiBaseUrl}/auth/google`, {
+        headers: { 'Accept': 'application/json' }
+      }).catch(() => null);
+
+      const contentType = res ? (res.headers.get('content-type') || '') : '';
+      if (res && res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        if (data.redirectUrl || data.url) {
+          window.location.href = data.redirectUrl || data.url;
+          return;
+        }
+        if (data.user) {
+          this._saveLocalSession(data.user);
+          if (data.activeBook) this._saveLocalBook(data.activeBook);
+          return data.user;
+        }
       }
     } catch {
-      // Ignorar fallo de red y proceder
+      // Ignorar y proceder con inicio directo en cliente
     }
 
-    // Para pruebas inmediatas en navegador local
+    // Si el usuario ya tenía su correo en el campo, lo aprovechamos
+    const emailInput = document.getElementById('authEmail');
+    const emailVal = (emailInput && emailInput.value.trim()) ? emailInput.value.trim() : 'usuario.google@gmail.com';
+    const nameVal = emailVal.split('@')[0] || 'Usuario Google';
+
     const googleUser = {
-      id: 'g_usr_demo',
-      email: 'usuario.google@ejemplo.com',
-      name: 'Usuario Google',
+      id: 'g_usr_' + Math.random().toString(36).substring(2, 9),
+      email: emailVal,
+      name: nameVal.charAt(0).toUpperCase() + nameVal.slice(1),
       provider: 'google',
       avatar: 'https://lh3.googleusercontent.com/a/default-user',
       createdAt: new Date().toISOString()

@@ -6,6 +6,15 @@
   <meta name="theme-color" content="#4A2417" />
   <title>VozEPUB Pro — Lector ePUB con Traductor EN➔ES y Voz Alta</title>
   
+  <!-- Base URL para evitar rutas rotas en subcarpetas -->
+  <base href="/" />
+  <script>
+    // Si el navegador fue redirigido a una subruta como /api/auth/google, corregir la URL a la raíz
+    if (window.location.pathname !== '/' && window.location.pathname.startsWith('/api/')) {
+      window.history.replaceState(null, '', '/');
+    }
+  </script>
+  
   <!-- Tailwind CSS (Versión específica y estable por CDN) -->
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   
@@ -20,7 +29,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="theme-dark min-h-screen flex flex-col selection:bg-[#8EC9E8] selection:text-[#4A2417]">
 
@@ -616,54 +625,52 @@
     </div>
   </div>
 
-  <!-- ================= MODAL DE DESPEDIDA / CONFIRMACIÓN ================= -->
-  <div id="farewellModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="farewellTitle">
-    <div id="farewellBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
 
-    <div class="farewell-dialog relative z-10 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 border shadow-2xl transition-all duration-200">
-      
-      <!-- Icono de Estado y Botón de Descarte -->
-      <div class="flex items-start justify-between mb-4">
-        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm"
-             style="background-color: var(--highlight-bg); color: var(--accent-color);">
-          <i data-lucide="book-check" class="w-6 h-6"></i>
-        </div>
-        <button id="btnCloseFarewellModal"
-                class="p-2 rounded-xl transition hover:opacity-80 active:scale-95"
-                style="background-color: var(--bg-primary); color: var(--text-primary);"
-                aria-label="Cerrar diálogo">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+  <!-- ================= MODAL: SALIDA / CERRAR LIBRO ================= -->
+<div id="exitModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+  <!-- 1. Velo oscuro con desenfoque para ocultar el texto del libro detrás -->
+  <div id="exitBackdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+  <!-- 2. Tarjeta sólida vinculada a tus variables CSS -->
+  <div class="relative z-10 w-full max-w-md rounded-3xl p-6 border shadow-2xl transition-colors duration-300"
+       style="background-color: var(--bg-secondary); border-color: var(--border-color); color: var(--text-primary);">
+    
+    <!-- Cabecera: Ícono + Botón cerrar -->
+    <div class="flex items-start justify-between mb-4">
+      <div class="w-12 h-12 rounded-2xl flex items-center justify-center"
+           style="background-color: var(--highlight-bg); color: var(--accent-color);">
+        <i data-lucide="book-check" class="w-6 h-6"></i>
       </div>
-
-      <!-- Jerarquía Tipográfica Estricta: Font-weight 800 para el Título -->
-      <h3 id="farewellTitle" class="farewell-title">
-        Adiós
-      </h3>
-
-      <!-- Cuerpo del Mensaje: Font-weight 400 para el texto informativo -->
-      <p class="farewell-message">
-        Tu progreso de lectura, capítulos traducidos y preferencias de voz han sido guardados de manera segura en tu navegador. Puedes regresar en cualquier momento y continuar donde lo dejaste.
-      </p>
-
-      <!-- Botones de Acción: Jerarquía de contraste funcional (700 vs 500) -->
-      <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-2.5">
-        <button id="btnCancelFarewell"
-                type="button"
-                class="farewell-btn-secondary w-full sm:w-auto px-4 py-2.5 rounded-xl transition active:scale-95 hover:opacity-85">
-          Continuar leyendo
-        </button>
-
-        <button id="btnConfirmFarewell"
-                type="button"
-                class="farewell-btn-primary w-full sm:w-auto px-5 py-2.5 rounded-xl shadow-md transition active:scale-95 hover:opacity-95 flex items-center justify-center gap-2">
-          <i data-lucide="log-out" class="w-4 h-4"></i>
-          <span>Cerrar libro</span>
-        </button>
-      </div>
-
+      <button id="btnCloseExitModal" class="p-2 rounded-xl transition hover:opacity-80"
+              style="background-color: var(--bg-primary); color: var(--text-primary);">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
     </div>
+
+    <!-- Contenido con contraste dinámico -->
+    <h3 class="text-2xl font-bold mb-2" style="color: var(--text-primary);">Adiós</h3>
+    <p class="text-sm leading-relaxed mb-6" style="color: var(--text-secondary);">
+      Tu progreso de lectura, capítulos traducidos y preferencias de voz han sido guardados de manera segura en tu navegador. Puedes regresar en cualquier momento y continuar donde lo dejaste.
+    </p>
+
+    <!-- Botones de acción -->
+    <div class="flex items-center justify-end gap-3">
+      <button id="btnCancelExit"
+              class="px-4 py-2.5 rounded-xl text-sm font-semibold border transition active:scale-95 hover:opacity-85"
+              style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary);">
+        Continuar leyendo
+      </button>
+
+      <button id="btnConfirmExit"
+              class="px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition active:scale-95 hover:opacity-90 shadow-md"
+              style="background-color: var(--accent-color); color: var(--text-on-accent, #ffffff);">
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+        <span>Cerrar libro</span>
+      </button>
+    </div>
+
   </div>
+</div>
 
   <!-- ================= NOTIFICACIÓN FLOTANTE (TOAST) ================= -->
   <div id="toastContainer"
@@ -675,7 +682,7 @@
     </div>
   </div>
 
-  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="/js/app.js"></script>
 
 </body>
 </html>
