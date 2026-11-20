@@ -666,14 +666,83 @@ export class WelcomeAuthUI {
 }
 
 /**
+ * Controlador del Modal de Confirmación de Reemplazo de Libro (SOLID: SRP)
+ * Aplica la Opción B: Control estricto con confirmación previa.
+ */
+export class ReplaceBookModalController {
+  constructor() {
+    this.modal = document.getElementById('replaceBookModal');
+    this.backdrop = document.getElementById('replaceBookBackdrop');
+    this.btnClose = document.getElementById('btnCloseReplaceBookModal');
+    this.btnCancel = document.getElementById('btnCancelReplaceBook');
+    this.btnConfirm = document.getElementById('btnConfirmReplaceBook');
+    this.currentTitleEl = document.getElementById('replaceCurrentBookTitle');
+    this.currentProgressEl = document.getElementById('replaceCurrentProgressBadge');
+    this.newTitleEl = document.getElementById('replaceNewBookTitle');
+
+    this.onConfirmCallback = null;
+    this.onCancelCallback = null;
+
+    this._bindEvents();
+  }
+
+  _bindEvents() {
+    if (!this.modal) return;
+    const handleClose = () => this.hide(true);
+    if (this.backdrop) this.backdrop.addEventListener('click', handleClose);
+    if (this.btnClose) this.btnClose.addEventListener('click', handleClose);
+    if (this.btnCancel) this.btnCancel.addEventListener('click', handleClose);
+
+    if (this.btnConfirm) {
+      this.btnConfirm.addEventListener('click', () => {
+        const cb = this.onConfirmCallback;
+        this.hide(false);
+        if (typeof cb === 'function') {
+          cb();
+        }
+      });
+    }
+  }
+
+  show({ currentTitle, currentProgress, newFileName, onConfirm, onCancel }) {
+    if (!this.modal) {
+      const ok = window.confirm(`¿Deseas reemplazar "${currentTitle}" por "${newFileName}"? Se perderá el progreso anterior.`);
+      if (ok && onConfirm) onConfirm();
+      else if (!ok && onCancel) onCancel();
+      return;
+    }
+
+    if (this.currentTitleEl) this.currentTitleEl.textContent = currentTitle || 'Libro actual';
+    if (this.currentProgressEl) this.currentProgressEl.textContent = `${currentProgress || 0}% leído`;
+    if (this.newTitleEl) this.newTitleEl.textContent = newFileName || 'Nuevo.epub';
+
+    this.onConfirmCallback = onConfirm;
+    this.onCancelCallback = onCancel;
+
+    this.modal.classList.remove('hidden');
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  hide(triggerCancel = true) {
+    if (this.modal) this.modal.classList.add('hidden');
+    if (triggerCancel && typeof this.onCancelCallback === 'function') {
+      this.onCancelCallback();
+    }
+    this.onConfirmCallback = null;
+    this.onCancelCallback = null;
+  }
+}
+
+/**
  * Función fábrica para inicializar la autenticación de forma desacoplada
  */
 export function initWelcomeAuth(options = {}) {
   const container = document.getElementById('welcomeAuthContainer');
-  if (!container) return null;
-
   const authService = new AuthService();
-  const authUI = new WelcomeAuthUI(container, authService, options);
+  const replaceModal = new ReplaceBookModalController();
+  const authUI = container ? new WelcomeAuthUI(container, authService, options) : null;
 
-  return { authService, authUI };
+  return { authService, authUI, replaceModal };
 }

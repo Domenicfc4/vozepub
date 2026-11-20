@@ -52,6 +52,37 @@ async function handleFileUpload(file) {
   }
 }
 
+// --- INTERCEPTOR DE CARGA CON CONFIRMACIÓN DE REEMPLAZO (OPCIÓN B) ---
+function requestFileUpload(file, inputElement) {
+  if (!file) return;
+
+  const currentBookTitle = (state.bookTitle && state.bookTitle !== 'Sin libro cargado') ? state.bookTitle : null;
+  const activeCloudBook = authInstance?.authService?.getActiveBook();
+  const currentTitle = activeCloudBook?.title || currentBookTitle;
+
+  // Si ya hay un libro activo en la cuenta o en lectura, confirmar reemplazo (Opción B)
+  if (currentTitle && authInstance?.replaceModal) {
+    const totalChapters = state.spine?.length || 1;
+    const currentChap = (state.currentChapterIndex || 0) + 1;
+    const progressPercent = activeCloudBook?.progressPercent || Math.round((currentChap / totalChapters) * 100);
+
+    authInstance.replaceModal.show({
+      currentTitle: currentTitle,
+      currentProgress: progressPercent,
+      newFileName: file.name,
+      onConfirm: async () => {
+        await handleFileUpload(file);
+      },
+      onCancel: () => {
+        if (inputElement) inputElement.value = '';
+      }
+    });
+  } else {
+    // Si no hay libro previo, cargar directamente
+    handleFileUpload(file);
+  }
+}
+
 // --- AJUSTE DE VELOCIDAD DE HABLA ---
 function setSpeechSpeed(newSpeed) {
   state.settings.rate = newSpeed;
@@ -158,8 +189,8 @@ async function generateAndLoadSpanishDemoEpub() {
 
 // --- EVENTOS PRINCIPALES ---
 function initEvents() {
-  dom.fileInputMain.addEventListener('change', (e) => e.target.files[0] && handleFileUpload(e.target.files[0]));
-  dom.fileInputHeader.addEventListener('change', (e) => e.target.files[0] && handleFileUpload(e.target.files[0]));
+  dom.fileInputMain.addEventListener('change', (e) => e.target.files[0] && requestFileUpload(e.target.files[0], e.target));
+  dom.fileInputHeader.addEventListener('change', (e) => e.target.files[0] && requestFileUpload(e.target.files[0], e.target));
   dom.btnLoadEnglishDemo.addEventListener('click', generateAndLoadEnglishDemoEpub);
   dom.btnLoadSpanishDemo.addEventListener('click', generateAndLoadSpanishDemoEpub);
   dom.btnDownloadSelf.addEventListener('click', downloadSelfHtml);
