@@ -4,6 +4,9 @@ import { saveEpubToIDB, loadEpubFromIDB, clearEpubFromIDB } from './storage.js';
 import { parseEpubBuffer, loadChapter, revokeActiveBlobs } from './epub-core.js';
 import { setTranslationMode } from './translator.js';
 import { stopSpeech, togglePlayPause, startSpeechFromCurrent, setSleepTimer, testVoiceAndProsodySample, normalizeLangTag } from './tts-engine.js';
+import { initWelcomeAuth } from './auth.js';
+
+let authInstance = null;
 
 // --- FUNCIONES AUXILIARES Y DESCARGA ---
 function downloadSelfHtml() {
@@ -31,6 +34,18 @@ async function handleFileUpload(file) {
     const buffer = await file.arrayBuffer();
     await saveEpubToIDB(buffer, file.name);
     await parseEpubBuffer(buffer, null);
+    
+    // Si hay sesión activa, asociar metadatos del libro
+    if (authInstance?.authService?.getCurrentUser()) {
+      authInstance.authService.setActiveCloudBook({
+        title: state.bookTitle || file.name.replace(/\.epub$/i, ''),
+        author: state.bookAuthor || 'Autor',
+        fileName: file.name,
+        progressPercent: 0,
+        updatedAt: new Date().toISOString()
+      });
+    }
+
     showToast('Libro ePUB cargado y guardado en Chrome');
   } catch (err) {
     showToast('No se pudo abrir el archivo seleccionado');
@@ -370,6 +385,23 @@ async function initialize() {
   const savedProgress = loadSettingsAndProgress();
   applyVisualSettings();
   initEvents();
+
+  // Inicialización desacoplada del módulo de autenticación en welcomeScreen (SOLID)
+  authInstance = initWelcomeAuth({
+    onToast: (msg) => showToast(msg),
+    onContinueReading: async (cloudBook) => {
+      const cachedBook = await loadEpubFromIDB();
+      if (cachedBook && cachedBook.buffer) {
+        await parseEpubBuffer(cachedBook.buffer, savedProgress);
+        showToast(`Abriendo ${cloudBook.title || 'tu libro'}`);
+      } else {
+        showToast('El archivo no está en memoria local. Súbelo de nuevo.');
+      }
+    },
+    onChangeBookRequest: () => {
+      dom.fileInputMain.click();
+    }
+  });
 
   const cachedBook = await loadEpubFromIDB();
   if (cachedBook && cachedBook.buffer) {
