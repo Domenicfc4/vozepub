@@ -251,10 +251,89 @@ export class AuthService {
   }
 
   /**
+   * Sube el libro a Cloudflare R2 y actualiza D1
+   */
+  async uploadCloudBook(file, title, author) {
+    if (!file) throw new Error('No se seleccionó ningún archivo.');
+
+    const formData = new FormData();
+    formData.append('file', file);
+    if (title) formData.append('title', title);
+    if (author) formData.append('author', author);
+
+    try {
+      const res = await fetch(`${this.apiBaseUrl}/books/upload`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        this._saveLocalBook(data.book);
+        return data.book;
+      }
+    } catch {
+      // Fallback local en desarrollo
+    }
+
+    const localBook = {
+      title: title || file.name.replace(/\.epub$/i, ''),
+      author: author || 'Autor',
+      fileSize: file.size,
+      progressPercent: 0,
+      updatedAt: new Date().toISOString()
+    };
+    this._saveLocalBook(localBook);
+    return localBook;
+  }
+
+  /**
+   * Descarga el binario del libro desde Cloudflare R2
+   */
+  async downloadCloudBook() {
+    try {
+      const res = await fetch(`${this.apiBaseUrl}/books/download`);
+      if (res.ok) {
+        return await res.arrayBuffer();
+      }
+    } catch {
+      return null;
+    }
+    return null;
+  }
+
+  /**
+   * Sincroniza el progreso del libro con Cloudflare D1
+   */
+  async syncCloudProgress(progressPercent, currentChapter = 0, currentParagraph = 0) {
+    if (!this.activeBook) return;
+
+    this.activeBook.progressPercent = progressPercent;
+    this.activeBook.currentChapter = currentChapter;
+    this.activeBook.currentParagraph = currentParagraph;
+    this._saveLocalBook(this.activeBook);
+
+    try {
+      await fetch(`${this.apiBaseUrl}/books/progress`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ progressPercent, currentChapter, currentParagraph })
+      });
+    } catch {
+      // Ignorar fallos de red en sincronización silenciosa
+    }
+  }
+
+  /**
    * Elimina el libro activo de la cuenta
    */
-  clearActiveCloudBook() {
-    this._saveLocalBook(null);
+  async clearActiveCloudBook() {
+    try {
+      await fetch(`${this.apiBaseUrl}/books/active`, { method: 'DELETE' }).catch(() => {});
+    } finally {
+      this._saveLocalBook(null);
+    }
   }
 
   getCurrentUser() {

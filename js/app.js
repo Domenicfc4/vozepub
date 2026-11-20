@@ -35,18 +35,16 @@ async function handleFileUpload(file) {
     await saveEpubToIDB(buffer, file.name);
     await parseEpubBuffer(buffer, null);
     
-    // Si hay sesión activa, asociar metadatos del libro
+    // Si hay sesión activa, subir a Cloudflare R2 y registrar en D1
     if (authInstance?.authService?.getCurrentUser()) {
-      authInstance.authService.setActiveCloudBook({
-        title: state.bookTitle || file.name.replace(/\.epub$/i, ''),
-        author: state.bookAuthor || 'Autor',
-        fileName: file.name,
-        progressPercent: 0,
-        updatedAt: new Date().toISOString()
-      });
+      authInstance.authService.uploadCloudBook(
+        file,
+        state.bookTitle || file.name.replace(/\.epub$/i, ''),
+        state.bookAuthor || 'Autor'
+      ).catch(e => console.warn('Error sincronizando libro en R2:', e));
     }
 
-    showToast('Libro ePUB cargado y guardado en Chrome');
+    showToast('Libro ePUB cargado y guardado');
   } catch (err) {
     showToast('No se pudo abrir el archivo seleccionado');
   }
@@ -421,12 +419,37 @@ async function initialize() {
   authInstance = initWelcomeAuth({
     onToast: (msg) => showToast(msg),
     onContinueReading: async (cloudBook) => {
+      // 1. Intentar cargar desde IndexedDB local primero (rápido y offline)
       const cachedBook = await loadEpubFromIDB();
       if (cachedBook && cachedBook.buffer) {
         await parseEpubBuffer(cachedBook.buffer, savedProgress);
         showToast(`Abriendo ${cloudBook.title || 'tu libro'}`);
-      } else {
-        showToast('El archivo no está en memoria local. Súbelo de nuevo.');
+        return;
+      }
+
+      // 2. Si no está en memoria local (ej. nuevo dispositivo), descargar de Cloudflare R2
+      dom.loadingText.textContent = 'Descargando libro desde la nube...';
+      dom.loadingIndicator.classList.remove('hidden');
+      dom.welcomeScreen.classList.add('hidden');
+
+      try {
+        const cloudBuffer = await authInstance.authService.downloadCloudBook();
+        if (cloudBuffer) {
+          await saveEpubToIDB(cloudBuffer, `${cloudBook.title || 'libro'}.epub`);
+          await parseEpubBuffer(cloudBuffer, {
+            chapterIndex: cloudBook.currentChapter || 0,
+            paragraphIndex: cloudBook.currentParagraph || 0
+          });
+          showToast(`Libro restaurado desde la nube`);
+        } else {
+          dom.loadingIndicator.classList.add('hidden');
+          dom.welcomeScreen.classList.remove('hidden');
+          showToast('No se pudo descargar el libro de la nube. Súbelo de nuevo.');
+        }
+      } catch (err) {
+        dom.loadingIndicator.classList.add('hidden');
+        dom.welcomeScreen.classList.remove('hidden');
+        showToast('Error descargando el libro.');
       }
     },
     onChangeBookRequest: () => {
